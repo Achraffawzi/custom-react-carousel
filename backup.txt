@@ -1,0 +1,71 @@
+{images.map((img, index) => (
+        //   <div key={index} className="single-image-container">
+            <img key={index} src={img} alt="image" className="item" />
+        //   </div>
+        ))}
+
+
+
+
+
+
+        import React, { useState, useEffect } from "react";
+import "./carousel.css";
+
+export const CarouselImage = ({ children, width }) => {
+    return (
+      <div className="carousel-item" style={{ width: width }}>
+        {children}
+      </div>
+    );
+  };
+
+export const CarouselItem = ({ children, width }) => {
+  return (
+    <div className="carousel-item" style={{ width: width }}>
+      {children}
+    </div>
+  );
+};
+
+const Carousel = ({ children }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  //   useEffect(() => {
+  //     let carouselInterval = setInterval(() => {
+  //       if (currentIndex < 0) setCurrentIndex(React.Children.count(children) - 1);
+  //       else if (currentIndex >= React.Children.count(children) - 1)
+  //         setCurrentIndex(0);
+  //       else setCurrentIndex((currentIndex) => currentIndex + 1);
+  //     }, 5000);
+
+  //     return () => clearInterval(carouselInterval);
+  //   }, [currentIndex]);
+
+  const updateIndex = (newIndex) => {
+    if (newIndex < 0) newIndex = React.Children.count(children) - 1;
+    else if (newIndex > React.Children.count(children) - 1) newIndex = 0;
+
+    setCurrentIndex(newIndex);
+  };
+
+  return (
+    <div className="carousel">
+      <div
+        className="carousel-inner"
+        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+      >
+        {React.Children.map(children, (child, index) => {
+          return React.cloneElement(child, { width: "100%" });
+        })}
+      </div>
+      {/* navigation */}
+      <div className="indicators">
+        <button onClick={() => updateIndex(currentIndex - 1)}>Prev</button>
+        <button onClick={() => updateIndex(currentIndex + 1)}>Next</button>
+      </div>
+    </div>
+  );
+};
+
+export default Carousel;
